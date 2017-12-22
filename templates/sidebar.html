@@ -1,0 +1,6 @@
+<div class="col-md-2">
+	<ul class="list-inline list-group">
+		{% for chapter in chapters %}
+			<li class="list-group-item"><a href="{{ url_for('viewSection', section=chapter) }}">{{ chapter }}</a></li>
+		{% endfor %}
+</div>
