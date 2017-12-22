@@ -3,4 +3,3 @@ Jinja2==2.10
 Werkzeug==0.12.2
 certifi==2017.11.5
 chardet==3.0.4
-gunicorn==19.6.0
