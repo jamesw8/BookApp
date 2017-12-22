@@ -7,11 +7,11 @@ import os
 def parse_htmlbook(page):
 	links = get_chap_links(page)
 	sections = {}
-	for ind in range(len(links)):
+	for index in range(len(links)):
 		section = {}
-		start = links[ind]
-		if ind < len(links)-1:
-			end = links[ind+1]
+		start = links[index]
+		if index < len(links)-1:
+			end = links[index+1]
 			patt = ('<A NAME="' + start + '"></A>(?P<sectionbody>.*)<A NAME="' + end + '">' )
 			match = re.search(patt,page,re.MULTILINE|re.DOTALL)
 			if match == None:
@@ -25,8 +25,7 @@ def parse_htmlbook(page):
 			section['title']= (soup.find('h3').contents)[0]
 			section['plist']= plist
 			sections[start] = section
-		print(links, sections) 
-		return links, sections
+	return links, sections
 
 def get_chap_links(page):
 	soup = BeautifulSoup(page, 'html.parser')
@@ -36,14 +35,17 @@ def get_chap_links(page):
 @app.route('/', methods=['GET'])
 def index():
 	image_url = open('static/images/title_img.jpg', 'r')
-	print(os.listdir())
 	page = open('static/data/senseandsensibility.html', 'r').read()
-	p = parse_htmlbook(page) 
-	print(p[1].keys())             
-	return render_template('home.html', chapters=p[0], image_url=image_url, title="Sense and Sensibility")
+	p = parse_htmlbook(page)
+	print(type(p[1]))
+	titles = []
+	for chap in p[1]:
+		titles.append(p[1][chap]['title'])
+	# print(p[1])             
+	return render_template('home.html', chapters=p[1], image_url=image_url, title="Sense and Sensibility")
 
 @app.route('/<section>/', methods=['GET'])
 def viewSection(section):
 	page = open('static/data/senseandsensibility.html', 'r').read()
-	p = parse_htmlbook(page) 
-	return render_template('section.html', chapters=p[0], section=section)
+	p = parse_htmlbook(page)
+	return render_template('section.html', chapters=p[1], section=p[1][section])
